@@ -233,13 +233,13 @@ def processText(update, context):
     message = update.message.text
     if message.startswith(STRINGS["http_prefix"]):
         try:
-            dwn.task_create(message)
+            dwn.task_create(uri=message)
             update.message.reply_text("{0}".format(STRINGS["torrent_link_found"]))
         except:
             update.message.reply_text("{0}".format(STRINGS["torrent_failed"]))
     elif message.startswith(STRINGS["magnet_prefix"]):
         try:
-            dwn.task_create(message)
+            dwn.task_create(uri=message)
             update.message.reply_text("{0}".format(STRINGS["mirror_link_added"]))
         except:
             update.message.reply_text("{0}".format(STRINGS["torrent_failed"]))
