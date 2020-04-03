@@ -21,14 +21,12 @@ from credentials import (SYNOLOGY_NAS_BOT_TOKEN, SYNOLOGY_NAS_BOT_OWNER,
 STRINGS = {
     'hello':
     'Hello! I am an automated Telegram bot written by @nicholaschum and @ivaniskandar to manage Synology NAS servers!',
-    'torrent_link_found':
-    'Torrent link added to the Download Station',
-    'torrent_failed':
-    'Failed to load torrent into Download Station',
+    'add_item_success':
+    'Item successfully added to the Download Station',
+    'add_item_failed':
+    'Failed to add item to the Download Station',
     'error_not_owner':
     'You are not the Owner of this server - Access denied',
-    'mirror_link_added':
-    'Mirror link added to the Download Station',
     'magnet_prefix':
     'magnet:?xt=urn:btih:',
     'http_prefix':
@@ -78,6 +76,10 @@ def start(update, context):
 #
 # You have 3 torrents in the queue.
 ################################################################################
+
+def get_default_download_directory():
+    config = dwn.get_config()
+    return __cleanseReply(config["data"]["default_destination"])
 
 
 def torrents(update, context):
@@ -153,10 +155,6 @@ def deleteAllTorrents():
     reply_text += "\nRemoved *{0}* torrents from the queue.".format(size)
     return __cleanseReply(reply_text)
 
-def getDownloadStationDownloadLocation():
-    download_station = __cleanseShittyJsonOutput(str(dwn.get_config()))
-    return download_station["data"]["default_destination"]
-
 def torrentListReplyMarkup():
     keyboard = [[
         InlineKeyboardButton("Pause Torrents", callback_data='1'),
@@ -231,19 +229,23 @@ def networkStatus(update, context):
 def processText(update, context):
     __enforceOwner(update)
     message = update.message.text
-    if message.startswith(STRINGS["http_prefix"]):
-        try:
-            dwn.task_create(message)
-            update.message.reply_text("{0}".format(STRINGS["torrent_link_found"]))
-        except:
-            update.message.reply_text("{0}".format(STRINGS["torrent_failed"]))
-    elif message.startswith(STRINGS["magnet_prefix"]):
-        try:
-            dwn.task_create(message)
-            update.message.reply_text("{0}".format(STRINGS["mirror_link_added"]))
-        except:
-            update.message.reply_text("{0}".format(STRINGS["torrent_failed"]))
+    is_link = message.startswith(STRINGS["http_prefix"]) or message.startswith(STRINGS["magnet_prefix"])
+    if is_link:
+        handleLink(update, message)
 
+
+def processDocument(update, context):
+    __enforceOwner(update)
+    file = update.message.document.get_file()
+    handleLink(update, file.file_path)
+
+
+def handleLink(update, link):
+    try:
+        dwn.task_create(link)
+        update.message.reply_text("{0}".format(STRINGS["add_item_success"]))
+    except:
+        update.message.reply_text("{0}".format(STRINGS["add_item_failed"]))
 
 
 def error(update, context):
@@ -290,7 +292,7 @@ def main():
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, processText))
-    dp.add_handler(MessageHandler(Filters.document.mime_type('application/x-bittorrent'), start))
+    dp.add_handler(MessageHandler(Filters.document, processDocument))
 
     # log all errors
     dp.add_error_handler(error)
