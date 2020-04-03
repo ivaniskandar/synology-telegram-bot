@@ -23,6 +23,8 @@ STRINGS = {
     'Hello! I am an automated Telegram bot written by @nicholaschum and @ivaniskandar to manage Synology NAS servers!',
     'torrent_link_found':
     'Torrent link added to the Download Station',
+    'torrent_file_found':
+    'Torrent file added to the Download Station',
     'torrent_failed':
     'Failed to load torrent into Download Station',
     'error_not_owner':
@@ -227,6 +229,14 @@ def networkStatus(update, context):
     update.message.reply_text(
         __cleanseReply(reply_text), parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
+def processTorrent(update, context):
+    __enforceOwner(update)
+    file_id = update.message.document.file_id
+    try:
+        dwn.task_create(file=file_id)
+        update.message.reply_text("{0}".format(STRINGS["torrent_file_found"]))
+    except:
+        update.message.reply_text("{0}".format(STRINGS["torrent_failed"]))
 
 def processText(update, context):
     __enforceOwner(update)
@@ -290,7 +300,7 @@ def main():
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, processText))
-    dp.add_handler(MessageHandler(Filters.document.mime_type('application/x-bittorrent'), start))
+    dp.add_handler(MessageHandler(Filters.document.mime_type('application/x-bittorrent'), processTorrent))
 
     # log all errors
     dp.add_error_handler(error)
