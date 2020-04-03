@@ -1,22 +1,26 @@
-FROM alpine:3.11.5
+FROM jamiehewland/alpine-pypy:3.6-7.3.0-alpine3.11
 
-# Prepare dependencies
-RUN apk update && apk add \
-    dumb-init \
+# Prepare build dependencies
+RUN apk add --no-cache --virtual .build-deps \
+    gcc \
     git \
-    python3 \
-    py3-pip
-
-RUN apk add py3-telegram-bot --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
-
-# Tidy up apk cache
-RUN rm -rf /var/cache/apk/*
+    libc-dev \
+    libffi-dev \
+    openssl-dev \
+    python3-dev
 
 # Install Python dependencies
-RUN pip3 install --upgrade \
-    pip \
+RUN pip3 install --no-cache-dir --upgrade \
+    python-telegram-bot \
     decorator \
     git+https://github.com/nicholaschum/synology-api
+
+# Delete build dependencies
+RUN apk del .build-deps
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    dumb-init
 
 ENV BOT_TOKEN=""
 ENV BOT_OWNER_ID=""
@@ -26,6 +30,6 @@ ENV TORRENT_WATCH_LOCATION=""
 ENV DSM_ACCOUNT=""
 ENV DSM_PASSWORD=""
 
-COPY src /src
-WORKDIR /src
-ENTRYPOINT ["/src/entrypoint.sh"]
+COPY entrypoint.sh /entrypoint.sh
+COPY syno_bot /syno_bot
+ENTRYPOINT ["/entrypoint.sh"]
