@@ -11,4 +11,6 @@ def escape_reserved_character(input):
                  .replace("}", "\}")
                  .replace("=", "\=")
                  .replace("|", "\|")
-                 .replace("!", "\!"))
+                 .replace("!", "\!")
+                 .replace(">", "\>")
+                 .replace("<", "\<"))
