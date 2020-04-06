@@ -1,5 +1,5 @@
 from math import ceil
-from synology_api import downloadstation
+from synology_api.downloadstation import DownloadStation
 from syno_bot import dispatcher, NAS_IP, NAS_PORT, DSM_ACCOUNT, DSM_PASSWORD
 from syno_bot.modules.helper.bot_decorator import send_typing_action
 from syno_bot.modules.helper.conversation import cancel_other_conversations
@@ -15,7 +15,7 @@ from telegram.utils.helpers import escape_markdown
 import telegram
 import time
 
-instance = downloadstation.DownloadStation(NAS_IP, NAS_PORT, DSM_ACCOUNT, DSM_PASSWORD)
+instance = DownloadStation.login(DSM_ACCOUNT, DSM_PASSWORD, NAS_IP, NAS_PORT)
 
 DOCUMENT_OR_LINK = range(1)
 

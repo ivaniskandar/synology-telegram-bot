@@ -1,6 +1,6 @@
 import time
 
-from synology_api import sys_info
+from synology_api.sys_info import SysInfo
 from syno_bot import dispatcher, NAS_IP, NAS_PORT, DSM_ACCOUNT, DSM_PASSWORD
 from syno_bot.modules.helper.bot_decorator import send_typing_action
 from syno_bot.modules.helper.file_size import human_readable_size
@@ -9,7 +9,7 @@ from syno_bot.modules.helper.string_processor import escape_reserved_character
 from telegram import ParseMode
 from telegram.ext import CommandHandler
 
-instance = sys_info.SysInfo(NAS_IP, NAS_PORT, DSM_ACCOUNT, DSM_PASSWORD)
+instance = SysInfo.login(DSM_ACCOUNT, DSM_PASSWORD, NAS_IP, NAS_PORT)
 
 @user_owner
 @send_typing_action
