@@ -169,11 +169,11 @@ def __show_nas_health_status(message, action=ACTION_REPLY):
         used = int(volume["size"]["used"])
         available = total - used
         reply_text += "`{0} ({1})`\n".format(id, status)
-        reply_text += "`Total     : {}`\n".format(human_readable_size(total))
-        reply_text += "`Used      : {}`\n".format(human_readable_size(used))
-        reply_text += "`Available : {}`\n\n".format(human_readable_size(available))
+        reply_text += "`├─Total     : {}`\n".format(human_readable_size(total))
+        reply_text += "`├─Used      : {}`\n".format(human_readable_size(used))
+        reply_text += "`└─Available : {}`\n".format(human_readable_size(available))
 
-    reply_text += "*Uptime*\n"
+    reply_text += "\n*Uptime*\n"
     uptime_seconds = int(dsm_info["uptime"])
     uptime_day = uptime_seconds // (24 * 3600)
     uptime_seconds = uptime_seconds % (24 * 3600)
