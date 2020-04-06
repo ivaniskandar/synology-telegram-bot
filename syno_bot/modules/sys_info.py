@@ -156,6 +156,7 @@ dispatcher.add_handler(nas_health_handler)
 dispatcher.add_handler(bot_health_handler)
 
 __help__ = """*System Info*
+/resourcemonitor - show NAS resource infos
 /nasnetwork - show NAS network status
 /nashealth - show NAS health status
 /bothealth - show bot health status
