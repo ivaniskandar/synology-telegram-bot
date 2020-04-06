@@ -75,7 +75,7 @@ def __add_download_link(update, context):
     elif message.video:
         link = message.video.get_file().file_path
     else:
-        link = update.message
+        link = message.text
 
     if __handle_link(update.message, link):
         return ConversationHandler.END
@@ -85,7 +85,7 @@ def __add_download_link(update, context):
 
 def __handle_link(message, link):
     try:
-        instance.task_create(link)
+        instance.tasks_create(link)
         message.reply_text("Item added successfully.")
         return True
     except:
