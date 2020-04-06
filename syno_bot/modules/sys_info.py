@@ -44,29 +44,34 @@ def __nas_network_status(update, context):
 @user_owner
 @send_typing_action
 def __nas_health_status(update, context):
-    dsmInfo = dsm.get_info()["data"]
+    dsm_info = dsm.get_info()["data"]
     storage = strg.storage()["data"]
-    print(str(storage))
+    update_available = sys_info.sys_upgrade_check()["data"]["update"]["available"]
 
-    temperature = dsmInfo["temperature"]
-    temperatureWarn = dsmInfo["temperature_warn"] == "True"
-    reply_text = "*NAS Temperatures*\n"
-    reply_text += "`Temperature     : {}°C`\n".format(temperature)
-    reply_text += "`Condition       : {}`\n".format("Warning! Check DSM for more info!" if temperatureWarn else "Good")
+    version = dsm_info["version_string"]
+    temperature = dsm_info["temperature"]
+    temperature_warn = dsm_info["temperature_warn"]
+    temperature_status = "Not Good" if temperature_warn else "Good"
+    update_status = "Update available" if update_available else "Latest"
+    reply_text = "*Status*\n"
+    reply_text += "`DSM Version        : {0} ({1})`\n".format(version[4:], update_status)
+    reply_text += "`System Temperature : {0} °C ({1})`\n".format(temperature, temperature_status)
 
     reply_text += "\n*Storage Volume*\n"
     volumes = storage["volumes"]
     for volume in volumes:
+        id = volume["id"].capitalize().replace("_", " ")
+        status = volume["status"].capitalize()
         total = int(volume["size"]["total"])
         used = int(volume["size"]["used"])
         available = total - used
-        reply_text += "`{}`\n".format(volume["id"])
+        reply_text += "`{0} ({1})`\n".format(id, status)
         reply_text += "`Total     : {}`\n".format(human_readable_size(total))
         reply_text += "`Used      : {}`\n".format(human_readable_size(used))
         reply_text += "`Available : {}`\n\n".format(human_readable_size(available))
 
     reply_text += "*Uptime*\n"
-    uptime_seconds = float(dsmInfo["uptime"])
+    uptime_seconds = int(dsm_info["uptime"])
     uptime_day = uptime_seconds // (24 * 3600)
     uptime_seconds = uptime_seconds % (24 * 3600)
     uptime_hour = uptime_seconds // 3600
@@ -76,14 +81,15 @@ def __nas_health_status(update, context):
     seconds = uptime_seconds
 
     processed_date_reply = str()
-    if (uptime_day == 1):
-        processed_date_reply = "{0} day ".format(int(uptime_day))
-    elif (uptime_day > 0):
-        processed_date_reply = "{0} days ".format(int(uptime_day))
+    if uptime_day == 1:
+        processed_date_reply = "{0} day ".format(uptime_day)
+    elif uptime_day > 0:
+        processed_date_reply = "{0} days ".format(uptime_day)
 
-    reply_text += ("`{0}{1}:{2}:{3}`".format(processed_date_reply, \
-        "{0:0=2d}".format(int(uptime_hour)), "{0:0=2d}".format(int(uptime_minutes)), \
-        "{0:0=2d}".format(int(seconds))))
+    reply_text += ("`{0}{1}:{2}:{3}`".format(processed_date_reply,
+                                             "{0:0=2d}".format(int(uptime_hour)),
+                                             "{0:0=2d}".format(int(uptime_minutes)),
+                                             "{0:0=2d}".format(int(seconds))))
 
     update_time = time.strftime("%d %B %Y %H:%M:%S", time.localtime(time.time()))
     reply_text += "\n\nLast update: {}".format(update_time)
@@ -125,8 +131,6 @@ def __resource_monitor(update, context):
         if length > longest_display_name_length:
             longest_display_name_length = length
     longest_display_name_length += 1
-    if longest_display_name_length < 9:
-        longest_display_name_length = 9 # So much for aligning
     for name, util in disks_util.items():
         name_padded = name
         for i in range(longest_display_name_length - len(name)):
@@ -142,7 +146,7 @@ def __resource_monitor(update, context):
 @user_owner
 @send_typing_action
 def __bot_health_status(update, context):
-    update.message.reply_text("I'm good! Thanks for asking.")
+    update.message.reply_text("The fact that I can reply to you means I'm good! Thanks for asking.")
 
 
 nas_network_handler = CommandHandler("nasnetwork", __nas_network_status)
