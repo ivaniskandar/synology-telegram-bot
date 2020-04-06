@@ -1,6 +1,7 @@
 from math import ceil
 from synology_api.downloadstation import DownloadStation
 from syno_bot import dispatcher, NAS_IP, NAS_PORT, DSM_ACCOUNT, DSM_PASSWORD
+from syno_bot.modules import ACTION_EDIT, ACTION_REPLY
 from syno_bot.modules.helper.bot_decorator import send_typing_action
 from syno_bot.modules.helper.conversation import cancel_other_conversations
 from syno_bot.modules.helper.file_size import human_readable_size
@@ -22,7 +23,6 @@ DOCUMENT_OR_LINK = range(1)
 MAIN_PAGE, DETAIL_PAGE, REMOVE_CONFIRMATION_PAGE = range(3)
 
 FIRST, PREVIOUS, NEXT, LAST = range(4)
-ACTION_REPLY, ACTION_EDIT = range(2)
 PAGE_LIMIT = 5
 TASK_PAGE_EMPTY_STATE = "You have no download task. Use /adddownload to create a new one."
 TASK_PAGE_HEADER_TEMPLATE = "Page *{0}* of *{1}* - You have *{2}* download task"

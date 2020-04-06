@@ -13,3 +13,6 @@ def __list_all_modules():
 
 ALL_MODULES = sorted(__list_all_modules())
 LOGGER.info("Available modules: %s", str(ALL_MODULES))
+
+# Commonly used constants
+ACTION_REPLY, ACTION_EDIT = range(2)
