@@ -33,6 +33,8 @@ Make sure to set the container environment variables:
 * `DSM_PASSWORD` - Your DSM password
 * `TZ` - System time zone. See available time zones [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
-## Source Code
+## Resources
 
-Available on [Github](https://github.com/ivaniskandar/synology-telegram-bot)
+Code available on [GitHub](https://github.com/ivaniskandar/synology-telegram-bot)
+
+Image available on [Docker Hub](https://hub.docker.com/repository/docker/ivaniskandar/synology-telegram-bot)
