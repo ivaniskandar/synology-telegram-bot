@@ -2,7 +2,7 @@
 
 newtag ?= latest
 
-image = ivaniskandar/syno-tele
+image = ivaniskandar/synology-telegram-bot
 
 build:
 	docker build --no-cache=true -t "${image}:latest" .
