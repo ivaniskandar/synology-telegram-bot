@@ -19,8 +19,9 @@ RUN pip3 install --no-cache-dir --upgrade \
 RUN apk del .build-deps
 
 # Install runtime dependencies
-RUN apk add --no-cache \
-    dumb-init
+RUN apk add --no-cache --update \
+    dumb-init \
+    tzdata
 
 ENV BOT_TOKEN=""
 ENV BOT_OWNER_ID=""
@@ -28,6 +29,7 @@ ENV NAS_IP=""
 ENV NAS_PORT=""
 ENV DSM_ACCOUNT=""
 ENV DSM_PASSWORD=""
+ENV TZ="GMT"
 
 COPY entrypoint.sh /entrypoint.sh
 COPY syno_bot /syno_bot

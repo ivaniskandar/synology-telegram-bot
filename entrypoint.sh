@@ -26,15 +26,5 @@ if [[ -z "$DSM_PASSWORD" ]]; then
     exit 1
 fi
 
-# Write variables for bot
-# cat > /syno_bot/credentials.py << EOF
-# SYNOLOGY_NAS_BOT_TOKEN="${BOT_TOKEN}"
-# SYNOLOGY_NAS_BOT_OWNER="${BOT_OWNER_ID}"
-# SYNOLOGY_NAS_BOT_IP="${NAS_IP}"
-# SYNOLOGY_NAS_BOT_PORT="${NAS_PORT}"
-# SYNOLOGY_NAS_BOT_ACCOUNT="${DSM_ACCOUNT}"
-# SYNOLOGY_NAS_BOT_PASSWORD="${DSM_PASSWORD}"
-# EOF
-
 echo "Finished preparations, starting..."
 /usr/bin/dumb-init pypy3 -m syno_bot
