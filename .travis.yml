@@ -1,0 +1,11 @@
+sudo: required
+dist: trusty
+language: python
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get -y install make
+  - python --version
+
+script:
+ - make build
