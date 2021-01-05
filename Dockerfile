@@ -13,7 +13,7 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN pip3 install --no-cache-dir --upgrade \
     python-telegram-bot \
     decorator \
-    git+https://github.com/nicholaschum/synology-api@Improving-code
+    git+https://github.com/nicholaschum/synology-api@9e5d5190fa228985cc0d39136d1a58e3d6cfb930
 
 # Delete build dependencies
 RUN apk del .build-deps
